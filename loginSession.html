@@ -24,17 +24,41 @@
         .form-control:focus{
             border-bottom: 1px solid #FF5252;
         }
+
+        #confirmPWwrapper{
+            display:none;
+        }
         .btn{
             width: 145px;
             margin-top:10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.4s;
+        }
+
+        #submitButton{
             border: 1px solid #FF7575;
             background-color: #FF7575;
             color: white;
-            border-radius: 4px;
-            cursor: pointer;
         }
-        .btn:hover {
-            background-color: #FF5252;
+
+        #createAccount{
+            width: 145px;
+            margin-top:10px;
+            font-size: xx-small;
+            cursor:pointer;
+        }
+        #createAccount:hover{
+            color: #FF7575;
+        }
+        #createButton{
+            display:none;
+            border: 1px solid #FF7575;
+            background-color: white;
+            color: black;
+        }
+        #createButton:hover{
+            background-color: #FF7575;
             color: white;
         }
         .form-group{
@@ -58,42 +82,74 @@
                 <label class="usernameLabel" for="password">password </label>
                 <input class="form-control" id="password" placeholder="Enter password" name="password">
             </div>
+            <div class="form-group" id="confirmPWwrapper">
+                <label class="usernameLabel" for="confirmPW">confirm password </label>
+                <input class="form-control" id="confirmPW" placeholder="Enter password" name="confirmPW">
+            </div>
+            <div id="createAccount"><u>Create an account</u></div>
+            <button id="createButton" type="submit" class="btn btn-default">Create Account</button>
             <button id="submitButton" type="submit" class="btn btn-default">Login</button>
         </div>
     </div> 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
 <script>
-   
-    function writeToDataBase(){ 
+    //creating an account, writing the hashed pw and username to the loginSessionTable
+    
+    document.getElementById("createAccount").addEventListener("click",function(){
+        $("#confirmPWwrapper").css("display","block");
+        $("#submitButton").replaceWith($("#createButton"));
+        $("#createButton").css("display","block");
+        document.getElementById("createButton").addEventListener("click",createLogin);
+    });
+    function createLogin(){
+        
         var username=$("#username").val();
-        var password=$("#password").val();
-        var dataToSend="username="+encodeURIComponent(username);
-        dataToSend+="&password="+encodeURIComponent(password);
-        // AJAX request
+        var passwordVal=$("#password").val();
+        var passwordConfirm=$("#confirmPW").val();
+
+        if (passwordVal === passwordConfirm){
+              //hashing the password
+            var hashObj=new jsSHA("SHA-256",'TEXT');
+            hashObj.update(passwordVal);
+            var password = hashObj.getHash("HEX");
+            var dataToSend="username="+encodeURIComponent(username)+"&password="+encodeURIComponent(password);
+            // AJAX request
+            var xhrWrite= new XMLHttpRequest();
+            xhrWrite.onreadystatechange=function(){
+                if (this.readyState === 4 && this.status === 200){
+                    var response=xhrWrite.responseText.trim();
+                    if (response=="passed"){
+                        console.log(response);
+                    }
+                }
+            };
+            xhrWrite.open("POST", "loginWriteToTable.php?" + dataToSend);
+            xhrWrite.send();
+        }
+        else{
+            alert("please confirm your password again");
+        }
+    }
+
+    document.getElementById("submitButton").addEventListener("click",confirmLogin);
+    function confirmLogin(){
+        var username=$("#username").val();
+        var passwordVal=$("#password").val();
+        var hashObj=new jsSHA("SHA-256",'TEXT');
+        hashObj.update(passwordVal);
+        var password = hashObj.getHash("HEX");
+        var dataToSend="username="+encodeURIComponent(username)+"&password="+encodeURIComponent(password);
         var xhrWrite= new XMLHttpRequest();
         xhrWrite.onreadystatechange=function(){
             if (this.readyState === 4 && this.status === 200){
                 var response=xhrWrite.responseText.trim();
+                //session token printed as json object
+                console.log(response);
             }
         };
-        xhrWrite.open("POST", "loginAPI.php?" + dataToSend);
+        xhrWrite.open("POST", "loginConfirm.php?" + dataToSend);
         xhrWrite.send();
     }
 
-    document.getElementById("submitButton").addEventListener("click",writeToDataBase);
-
-
-    function readFromDataBase(){
-        var dataToSend_fromtable="lastId="+encodeURIComponent(lastMessageId);
-        var xhrRead=new XMLHttpRequest();
-        xhrRead.onreadystatechange=function(){
-            if (this.readyState === 4 && this.status === 200){
-                var trimmedresponse=xhrRead.responseText.trim();
-                console.log("COMING BACK:["+trimmedresponse+"]");
-            }
-        };
-        xhrRead.open("POST", "loginAPICheck.php?" + dataToSend_fromtable);
-        xhrRead.send();
-    }
 </script>
 </body>
