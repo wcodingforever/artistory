@@ -14,26 +14,46 @@
 		font-family: 'Sofia';
 		}
 	#mainH {
-		color: white;
-		font-weight: bold;
-		font-size: 30px;
-		background-image: url("creation.jpg");
-		background-repeat: no-repeat;
-		width: 800px;
-		height: 400px; 
-		background-size: cover;
+		color: black;
+		/* font-weight: bold; */
+		width:100%; 
 		text-align: center;
-		margin: 45px 40px 40px 40px;
+		margin: 55px 20px 20px 20px;
 		border: 1px solid red;
+		/* width:800px;
+		height: 250px ; */
 
+	}
+
+	#leftLeaf {
+		display: inline-block;
+		width: 10%;
+		float: left;
+
+	}
+	#rightLeaf {
+		display: inline-block;
+		width: 10%;
+		float: right;
+	}
+	#created {
+		display: inline-block;
+		width: 30%;
+		font-size: 40px;
+	}
+	.leaf {
+		width:70px;
+		height:70px;
 	}
 
 	#myNavbar {
 		vertical-align: bottom;
+		padding-top: 5px;
 
 	}
 	#logo{
 		float: left;
+		padding-top: 5px;
 	}
 	.navRight {
 		float:right;
@@ -56,6 +76,20 @@
 		margin-right: 25px;
 		
 	} 
+	.categImages {
+		width: 150px;
+		height: 150px;
+		border: 1px solid red;
+	}
+	.col-md-3 {
+		padding-bottom: 10px;
+		padding-top: 10px;
+	}
+	.lupa {
+		color: white;	
+	}
+
+
 
 
 	</style>
@@ -65,27 +99,59 @@
 			<nav class="navbar navbar-default navbar-fixed-top"> 
 				<div class="container">
 					<span id="logo"> LOGO </span>
+					<form class="navbar-form navbar-left" role="search">
+  							<input type="text" class="form-control" placeholder="I am interested in" id="placeholder"> 
+    						<button type="submit" value="go" class="btn btn-default" id="lookingFor"> 
+    						<span class="glyphicon glyphicon-search" aria-hidden="true" id="lupa"></span>
+  							</button>
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
 						<span class="icon-bar"></span>
   						<span class="icon-bar"></span>
   						<span class="icon-bar"></span>
   					</button>
+  					
+  					</form>
 					<div class="collapse navbar-collapse" id="myNavbar">
   						<ul class="nav navbar-nav navRight">	
-							<li> Sign in </li>
-							<li> Become a member </li>
+							<li id="signIn"> Sign in </li>
+							<li id="signUp"> Become a member </li>
 				</div>
 			</nav>
 		</header>
-			<div id="mainH" class="container">
-				<h1> Created to create </h1>
+			<div id="mainH">
+				<div id="leftLeaf"><img src="left_leaf.png" class="leaf">
+				</div>
+				<div id="created"><span> Created to create </span> </div>
+				<div id="rightLeaf"> <img src="right_leaf.png" class="leaf"></div>
 			</div>
 
+			<div class="container"> 
+				<div class="row" class="" >
+					<div class="col-md-3"> <span> <a href =""> Handicraft </a></span><img src="handicraft_bw_art.png" class="categImages"> </div>
+
+					<div class="col-md-3">  <span> <a href="">Photography </a></span><img src="camera.jpg" class="categImages"> </div>
+
+					<div class="col-md-3"> <span> <a href="">Illustration </a></span><img src="pencil_2.jpg" class="categImages"></div>
+
+					<div class="col-md-3"> <span> <a href="">Paint </a></span><img src="sztaluga_art.jpg" class="categImages"></div>
+
+					<!-- <div class="col-md-3"> <span> Jewellery </span><img src=""></div>
+					 -->
+				</div>
 
 
+			</div>
+
+	<script type="text/javascript">
 	
+	var logIn=("#signIn").val;
+	var signUp=("#signUp").val;
 
 
+
+		
+
+	</script>
 
 
 
