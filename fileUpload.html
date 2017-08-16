@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        body{
+            font-family: 'Roboto', sans-serif;
+        }
+        #uploaderContainer{
+            width: 600px;
+            height: 600px;
+            border: 1px solid;
+            text-align:Center;
+        }
+        #title{
+            width:300px;
+            height:20px;
+            padding:5px;
+            margin: 5px auto;
+            text-align: center;
+        }
+
+        #uploaderContainer [type=file] {
+            cursor: pointer;
+        }
+        #submitButton{
+            width: 100px;
+            margin-top:10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.4s;
+            border: 1px solid #FF7575;
+            background-color: #FF7575;
+            color: white;
+        }
+        #submitButton:hover{
+            background-color: white;
+            color: #FF7575;
+        }
+    </style>
+</head>
+    
+<body>
+    <div id="uploaderContainer">
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+        <div id="title">Select the file you want to upload</div>
+        <input type="file" name="fileToUpload" id="fileToUpload">
+        <input id="submitButton" type="submit" value="Upload Image" name="submit">
+        </form>
+    </div>
+    
+</body>

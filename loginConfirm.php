@@ -16,11 +16,10 @@
         $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inPwd"=>$hashedPW));
         $results=$dbStatement->fetchAll(PDO::FETCH_ASSOC);
         if (count($results)!==0){
-            $timestamp=date("H:i:s");
             $sessionTokenVal=$hashedPW.$timestamp;
             $sessionToken=hash("sha256",$sessionTokenVal);
-            $dbStatement=$dbConn->prepare("UPDATE `loginSessionTable` SET session=:inSession , timestamp=:inTime WHERE password=:inPwd");
-            $dbResult=$dbStatement->execute(array(":inSession"=>$sessionToken,":inTime"=>$timestamp,":inPwd"=>$hashedPW));
+            $dbStatement=$dbConn->prepare("UPDATE `loginSessionTable` SET session=:inSession , timestamp=NOW() WHERE password=:inPwd");
+            $dbResult=$dbStatement->execute(array(":inSession"=>$sessionToken,":inPwd"=>$hashedPW));
             //returning json value with the sessiontoken
             $arr = array ('code'=>"OK",'session'=>$sessionToken);
             echo json_encode($arr);

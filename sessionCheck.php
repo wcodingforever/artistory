@@ -8,20 +8,27 @@
     $dbResult=$dbStatement->execute(array(":inUser"=>$username));
     $results=$dbStatement->fetchAll(PDO::FETCH_ASSOC);
     if(count($results)!==0){
-        $dbStatement=$dbConn->prepare("SELECT `timestamp` FROM `loginSessionTable` WHERE `username` = :inUser AND `session` = :inSession");
+        //fetching the timestampDB from the table.
+        $dbStatement=$dbConn->prepare("SELECT `timestamp`, NOW() AS current FROM `loginSessionTable` WHERE `username` = :inUser AND `session` = :inSession");
         $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inSession"=>$sessionToken));
         $results=$dbStatement->fetchAll(PDO::FETCH_ASSOC);
-        $timestampDB=new DateTime($results[0]['timestamp']);
-        print_r($timestampDB);
-        $timestampNow=new DateTime(date("H:i:s"));
-        print_r( $timestampNow);
-        $diff=$timestampDB->diff($timestampNow);
-        print_r($diff->format('%i Minutes %s Seconds'));
-        if($diff<24){
-            $arr = array ('code'=>"OK");
-            echo json_encode($arr);
-        }
 
+        //getting the difference between timestamps.
+        $timestampDB=new DateTime($results[0]['timestamp']);
+        // print_r($timestampDB).PHP_EOL;
+        $timestampNow=new DateTime($results[0]['current']);
+        // print_r($timestampNow).PHP_EOL;
+        $interval = $timestampNow->getTimestamp() - $timestampDB->getTimestamp();
+        if ($interval < (24 * 60 * 60)) {
+            // echo ("WITHIN 24".PHP_EOL);
+            $msg = "OK";
+        }
+        else {
+            // echo ("AFTER 24".PHP_EOL);
+            $msg = "ERROR";
+        }
+        $arr = array ('code'=> $msg);
+        echo json_encode($arr);
     }
 
 ?>
