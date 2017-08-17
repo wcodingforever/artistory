@@ -11,18 +11,17 @@
 	<style type="text/css">
 		
 	body {
+		padding-top: 45px;
 		font-family: 'Sofia';
 		}
 	#mainH {
 		color: black;
-		/* font-weight: bold; */
 		width:100%; 
 		text-align: center;
-		margin: 55px 20px 20px 20px;
+		margin: 20px 20px 20px 20px;
 		border: 1px solid red;
-		/* width:800px;
-		height: 250px ; */
-
+		text-align: center;
+		
 	}
 
 	#leftLeaf {
@@ -38,7 +37,7 @@
 	}
 	#created {
 		display: inline-block;
-		width: 30%;
+		width: 40%;
 		font-size: 40px;
 	}
 	.leaf {
@@ -49,7 +48,6 @@
 	#myNavbar {
 		vertical-align: bottom;
 		padding-top: 5px;
-
 	}
 	#logo{
 		float: left;
@@ -72,10 +70,14 @@
 		background-color: blue;
 	} 
 	
-	.nav>li { 
+	ul>li { 
 		margin-right: 25px;
-		
 	} 
+
+	ul>li: hover {
+		background-color: grey;
+
+	}
 	.categImages {
 		width: 150px;
 		height: 150px;
@@ -88,10 +90,10 @@
 	.lupa {
 		color: white;	
 	}
+	#lookingFor {
 
-
-
-
+	}
+	
 	</style>
 </head>
 	<body>
@@ -99,11 +101,15 @@
 			<nav class="navbar navbar-default navbar-fixed-top"> 
 				<div class="container">
 					<span id="logo"> LOGO </span>
-					<form class="navbar-form navbar-left" role="search">
-  							<input type="text" class="form-control" placeholder="I am interested in" id="placeholder"> 
+					<form class="navbar-form navbar-left" role="search" >
+						<div class="input-group"> 
+  							<input type="text" class="form-control" placeholder="I am interested in" id="placeholder" > 
+    						<span class="input-group-btn"> 
     						<button type="submit" value="go" class="btn btn-default" id="lookingFor"> 
-    						<span class="glyphicon glyphicon-search" aria-hidden="true" id="lupa"></span>
+    						<span class="glyphicon glyphicon-search" aria-hidden="true" id="lupa" ></span>
   							</button>
+  							</span>
+  						</div>
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
 						<span class="icon-bar"></span>
   						<span class="icon-bar"></span>
@@ -118,13 +124,14 @@
 				</div>
 			</nav>
 		</header>
-			<div id="mainH">
-				<div id="leftLeaf"><img src="left_leaf.png" class="leaf">
-				</div>
-				<div id="created"><span> Created to create </span> </div>
-				<div id="rightLeaf"> <img src="right_leaf.png" class="leaf"></div>
+			<div class="container">
+				<div id="mainH" class="row">
+					<div id="leftLeaf" class="col-md-4"><img src="left_leaf.png" class="leaf">
+					</div>
+					<div id="created" class="col-md-4"><span> Created to create </span> </div>
+					<div id="rightLeaf" class="col-md-4"> <img src="right_leaf.png" class="leaf"></div>
 			</div>
-
+		</div>
 			<div class="container"> 
 				<div class="row" class="" >
 					<div class="col-md-3"> <span> <a href =""> Handicraft </a></span><img src="handicraft_bw_art.png" class="categImages"> </div>
@@ -138,20 +145,32 @@
 					<!-- <div class="col-md-3"> <span> Jewellery </span><img src=""></div>
 					 -->
 				</div>
-
-
 			</div>
 
+			<div class="container"> 
+				<div class="row" class="" >
+					<div class="col-md-3"> 
+
 	<script type="text/javascript">
-	
-	var logIn=("#signIn").val;
-	var signUp=("#signUp").val;
+
+	var searchBtn=("#lookingFor");
+	var logIn=("#signIn");
+	var becomeMem=("#signUp");
+
+	becomeMem.click(signUpFunction);
+
+	function signUpFunction(e) {
+
+
+
+	}
 
 
 
 		
 
 	</script>
+
 
 
 
