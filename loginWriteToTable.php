@@ -14,8 +14,6 @@
         $dbStatement=$dbConn->prepare("INSERT INTO `loginSessionTable` (`username`,`password`) VALUES (:inUser, :inPwd)");
         $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inPwd"=>$hashedPW));
     }
-
-
 ?>
 
 

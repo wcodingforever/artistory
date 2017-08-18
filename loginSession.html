@@ -91,64 +91,64 @@
             <button id="submitButton" type="submit" class="btn btn-default">Login</button>
         </div>
     </div> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
-<script>
-    //creating an account, writing the hashed pw and username to the loginSessionTable
-    
-    document.getElementById("createAccount").addEventListener("click",function(){
-        $("#confirmPWwrapper").css("display","block");
-        $("#submitButton").replaceWith($("#createButton"));
-        $("#createButton").css("display","block");
-        document.getElementById("createButton").addEventListener("click",createLogin);
-    });
-    function createLogin(){
-        var username=$("#username").val();
-        var passwordVal=$("#password").val();
-        var passwordConfirm=$("#confirmPW").val();
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
+    <script>
+        //creating an account, writing the hashed pw and username to the loginSessionTable
+        
+        document.getElementById("createAccount").addEventListener("click",function(){
+            $("#confirmPWwrapper").css("display","block");
+            $("#submitButton").replaceWith($("#createButton"));
+            $("#createButton").css("display","block");
+            document.getElementById("createButton").addEventListener("click",createLogin);
+        });
+        function createLogin(){
+            var username=$("#username").val();
+            var passwordVal=$("#password").val();
+            var passwordConfirm=$("#confirmPW").val();
+            
+            if (passwordVal === passwordConfirm){
+                //hashing the password
+                var hashObj=new jsSHA("SHA-256",'TEXT');
+                hashObj.update(passwordVal);
+                var password = hashObj.getHash("HEX");
+                var dataToSend="username="+encodeURIComponent(username)+"&password="+encodeURIComponent(password);
+                // AJAX request
+                var xhrWrite= new XMLHttpRequest();
+                xhrWrite.onreadystatechange=function(){
+                    if (this.readyState === 4 && this.status === 200){
+                        var response=xhrWrite.responseText.trim();
+                        if (response=="passed"){
+                            console.log(response);
+                        }
+                    }
+                };
+                xhrWrite.open("POST", "loginWriteToTable.php?" + dataToSend);
+                xhrWrite.send();
+            }
+            else{
+                alert("please confirm your password again");
+            }
+        }
 
-        if (passwordVal === passwordConfirm){
-              //hashing the password
+        document.getElementById("submitButton").addEventListener("click",confirmLogin);
+        function confirmLogin(){
+            var username=$("#username").val();
+            var passwordVal=$("#password").val();
             var hashObj=new jsSHA("SHA-256",'TEXT');
             hashObj.update(passwordVal);
             var password = hashObj.getHash("HEX");
             var dataToSend="username="+encodeURIComponent(username)+"&password="+encodeURIComponent(password);
-            // AJAX request
             var xhrWrite= new XMLHttpRequest();
             xhrWrite.onreadystatechange=function(){
                 if (this.readyState === 4 && this.status === 200){
                     var response=xhrWrite.responseText.trim();
-                    if (response=="passed"){
-                        console.log(response);
-                    }
+                    //session token printed as json object
+                    console.log(response);
                 }
             };
-            xhrWrite.open("POST", "loginWriteToTable.php?" + dataToSend);
+            xhrWrite.open("POST", "loginConfirm.php?" + dataToSend);
             xhrWrite.send();
         }
-        else{
-            alert("please confirm your password again");
-        }
-    }
 
-    document.getElementById("submitButton").addEventListener("click",confirmLogin);
-    function confirmLogin(){
-        var username=$("#username").val();
-        var passwordVal=$("#password").val();
-        var hashObj=new jsSHA("SHA-256",'TEXT');
-        hashObj.update(passwordVal);
-        var password = hashObj.getHash("HEX");
-        var dataToSend="username="+encodeURIComponent(username)+"&password="+encodeURIComponent(password);
-        var xhrWrite= new XMLHttpRequest();
-        xhrWrite.onreadystatechange=function(){
-            if (this.readyState === 4 && this.status === 200){
-                var response=xhrWrite.responseText.trim();
-                //session token printed as json object
-                console.log(response);
-            }
-        };
-        xhrWrite.open("POST", "loginConfirm.php?" + dataToSend);
-        xhrWrite.send();
-    }
-
-</script>
+    </script>
 </body>
