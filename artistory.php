@@ -5,8 +5,6 @@
 	
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link href='https://fonts.googleapis.com/css?family=Sofia' rel='stylesheet'>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<style type="text/css">
 		
@@ -137,21 +135,21 @@
 		</header>
 			<div class="container">
 				<div id="mainH" class="row">
-					<div id="leftLeaf" class="col-md-4"><img src="left_leaf.png" class="leaf">
+					<div id="leftLeaf" class="col-md-4"><img src="imgs/left_leaf.png" class="leaf">
 					</div>
 					<div id="created" class="col-md-4"><span> Created to create </span> </div>
-					<div id="rightLeaf" class="col-md-4"> <img src="right_leaf.png" class="leaf"></div>
+					<div id="rightLeaf" class="col-md-4"> <img src="imgs/right_leaf.png" class="leaf"></div>
 			</div>
 		</div>
 			<div class="container" id="categ"> 
 				<div class="row" class="" >
-					<div class="col-md-3"> <span> <a href =""> Handicraft </a></span><img src="handicraft_bw_art.png" class="categImages"> </div>
+					<div class="col-md-3"> <span> <a href =""> Handicraft </a></span><img src="imgs/handicraft_bw_art.png" class="categImages"> </div>
 
-					<div class="col-md-3">  <span> <a href="">Photography </a></span><img src="camera.jpg" class="categImages"> </div>
+					<div class="col-md-3">  <span> <a href="">Photography </a></span><img src="imgs/camera.jpg" class="categImages"> </div>
 
-					<div class="col-md-3"> <span> <a href="">Illustration </a></span><img src="pencil_2.jpg" class="categImages"></div>
+					<div class="col-md-3"> <span> <a href="">Illustration </a></span><img src="imgs/pencil_2.jpg" class="categImages"></div>
 
-					<div class="col-md-3"> <span> <a href="">Paint </a></span><img src="sztaluga_art.jpg" class="categImages"></div>
+					<div class="col-md-3"> <span> <a href="">Paint </a></span><img src="imgs/sztaluga_art.jpg" class="categImages"></div>
 
 					<!-- <div class="col-md-3"> <span> Jewellery </span><img src=""></div>
 					 -->
@@ -173,31 +171,23 @@
 					
 				</div>
 			</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
 
-
-
-	<script type="text/javascript">
-
-	var searchBtn=("#lookingFor");
-	var logIn=("#signIn");
-	var becomeMem=("#signUp");
+	var searchBtn = $("#lookingFor");
+	var logIn = $("#signIn");
+	var becomeMem = $("#signUp");
 
 	becomeMem.click(signUpFunction);
+	function signUpFunction(e) { }
 
-	function signUpFunction(e) {
-
-
-
-	}
-
-
-
-		
-
-	</script>
-
-
-
-
+    logIn.click(function() {
+        window.location.href = "loginSession.php?from=artistory.php&action=login";
+    });
+	becomeMem.click(function() {
+        window.location.href = "loginSession.php?from=artistory.php&action=create";
+    });
+    </script>
 </body>
 </html>

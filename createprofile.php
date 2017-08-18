@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<?php
+    if (!isset($_REQUEST['session']) || !isset($_REQUEST['username'])) {
+        header("Location: artistory.php");
+    }
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,8 +19,6 @@
             color: rgba(140, 50, 90, 0.8);
         }
         label {
-            /*border: 1px solid greenyellow;*/
-            /*vertical-align:top;*/
             display:inline-block;
             text-align: right;
             padding: 10px;
@@ -25,7 +27,6 @@
         }
         input {
             margin-left: 5px;
-            /*border: 1px solid green;*/
             width: 250px;
             height: 28px;
             padding: 3px;
@@ -81,42 +82,46 @@
         <!--these are inputs-->
         <div>
             <label>Firstname*</label>
-            <input type="text" placeholder="John">
+            <input type="text" id="firstName" name="firstName" value="" placeholder="John">
         </div>
         <div>
             <label>Lastname*</label>
-            <input type="text" placeholder="Smith">
+            <input type="text" id="lastName" name="lastName" value="" placeholder="Smith">
         </div>
         <div>
             <label>Phone*</label>
-            <input type="text" placeholder="123-456-7890">
+            <input type="text" id="phone" name="phone" value="" placeholder="123-456-7890">
         </div>
         <div>
             <label>Email*</label>
-            <input type="text" placeholder="abcd@whatever.com">
+            <input type="text" id="email" name="email" value="" placeholder="abcd@whatever.com">
         </div>
         <div>
             <label>City*</label>
-            <input type="text" placeholder="New York">
+            <input type="text" id="city" name="city" value="" placeholder="New York">
         </div>
         <div>
             <label>Country*</label>
-            <input type="text" placeholder="USA">
+            <input type="text" id="country" name="country" value="" placeholder="USA">
         </div>
         <div>
-            <label id="socialmedia-label" class="textarea-label">Social Media*</label>
-            <textarea id="socialmedia" class="textarea" placeholder="facebook, instagram, twitter, pinterest address ... "></textarea>
+            <label id="socialmedia-label" class="textarea-label" name="socialMedia" value="">Social Media*</label>
+            <textarea id="socialMedia" name="socialMedia" value="" class="textarea" placeholder="facebook, instagram, twitter, pinterest address ... "></textarea>
         </div>
-        <div><label id="interest-label" class="textarea-label">Interest*</label>
+        <div><label id="interest-label" class="textarea-label" name="interest" value="">Interest*</label>
             <textarea id="interest" class="textarea" placeholder="about you"></textarea>
         </div>
         <!--This is submit button-->
         <div id="submit-wrapper">
-            <input type="button" id="submit" value="Submit">
+            <input type="submit" id="submit" name="submit" value="Submit">
         </div>
     </div>
+    <!-- firstName lastName phone email city country socialMedia interest -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        function writeToDatabase() { 
+        document.getElementById("submit").addEventListener("click", createprofile);
+        function createprofile() {
             var firstName = $("#firstName").val();
             var lastName = $("#lastName").val();
             var phone = $("#phone").val();
@@ -126,36 +131,34 @@
             var socialMedia = $("#socialMedia").val();
             var interest = $("#interest").val();
 
-            var dataToSend = "firstName=" + encodeURIComponent(firstName);
-            dataToSend = "lastName=" + encodeURIComponent(lastName);
-            dataToSend+="&password=" + encodeURIComponent(password);
-            
-            // AJAX request
-            var xhrWrite= new XMLHttpRequest();
-            xhrWrite.onreadystatechange = function() {
-                if (this.readyState === 4 && this.status === 200) {
-                    var response=xhrWrite.responseText.trim();
+            // TODO : Send profile informaion please!!
+
+            var dataToSend=
+            "firstName="+encodeURIComponent(firstName)+
+            "&lastName="+encodeURIComponent(lastName)+
+            "&phone="+encodeURIComponent(phone)+
+            "&email="+encodeURIComponent(email)+
+            "&city="+encodeURIComponent(city)+
+            "&country="+encodeURIComponent(country)+
+            "&socialMedia="+encodeURIComponent(socialMedia)+
+            "&interest="+encodeURIComponent(interest);
+
+            // console.log("DATA: " + dataToSend);
+
+            var xhrWrite = new XMLHttpRequest();
+            xhrWrite.onreadystatechange = function(){
+                if (this.readyState === 4 && this.status === 200){
+                    var response = xhrWrite.responseText.trim();
+                    //console.log(response);
+                    var jsonObj = JSON.parse(response);
+                    if (jsonObj.code === "OK") {
+                        window.location.href = "artistory.php" + location.search;
+                    }
                 }
             };
-            xhrWrite.open("POST", "loginAPI.php?" + dataToSend);
+            xhrWrite.open("GET", "insert-into-profile-info.php?" + dataToSend);
             xhrWrite.send();
-        }
-            +
-            +    document.getElementById("submitButton").addEventListener("click",writeToDataBase);
-            +
-            +
-            +    function readFromDataBase(){
-            +        var dataToSend_fromtable="lastId="+encodeURIComponent(lastMessageId);
-            +        var xhrRead=new XMLHttpRequest();
-            +        xhrRead.onreadystatechange=function(){
-            +            if (this.readyState === 4 && this.status === 200){
-            +                var trimmedresponse=xhrRead.responseText.trim();
-            +                console.log("COMING BACK:["+trimmedresponse+"]");
-            +            }
-            +        };
-            +        xhrRead.open("POST", "loginAPICheck.php?" + dataToSend_fromtable);
-            +        xhrRead.send();
-            +    }
-            +</script>
+        };
+    </script>
 </body>
 </html>

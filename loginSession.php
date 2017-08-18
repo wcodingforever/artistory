@@ -95,12 +95,24 @@
     <script>
         //creating an account, writing the hashed pw and username to the loginSessionTable
         
-        document.getElementById("createAccount").addEventListener("click",function(){
+        // document.getElementById("createAccount").addEventListener("click",function(){
+        //     $("#confirmPWwrapper").css("display","block");
+        //     $("#submitButton").replaceWith($("#createButton"));
+        //     $("#createButton").css("display","block");
+        //     document.getElementById("createButton").addEventListener("click",createLogin);
+        // });
+
+        <?php
+            if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'create') {
+        ?>
             $("#confirmPWwrapper").css("display","block");
             $("#submitButton").replaceWith($("#createButton"));
             $("#createButton").css("display","block");
+            $("#createAccount").css("display", "none");
             document.getElementById("createButton").addEventListener("click",createLogin);
-        });
+        <?php
+            }
+        ?>
         function createLogin(){
             var username=$("#username").val();
             var passwordVal=$("#password").val();
@@ -117,8 +129,10 @@
                 xhrWrite.onreadystatechange=function(){
                     if (this.readyState === 4 && this.status === 200){
                         var response=xhrWrite.responseText.trim();
-                        if (response=="passed"){
-                            console.log(response);
+                        var jsonObj = JSON.parse(response);
+                        // console.log("RESPONSE: " + jsonObj.code);
+                        if (jsonObj.code === "OK") {
+                            confirmLogin("createprofile.php");
                         }
                     }
                 };
@@ -130,8 +144,10 @@
             }
         }
 
-        document.getElementById("submitButton").addEventListener("click",confirmLogin);
-        function confirmLogin(){
+        document.getElementById("submitButton").addEventListener("click", confirmLoginHandler);
+        function confirmLoginHandler(e) { confirmLogin(); }
+        function confirmLogin(from){
+            if (typeof from === 'undefined') from = "<?php if (isset($_REQUEST['from'])) echo($_REQUEST['from']); ?>";
             var username=$("#username").val();
             var passwordVal=$("#password").val();
             var hashObj=new jsSHA("SHA-256",'TEXT');
@@ -142,13 +158,18 @@
             xhrWrite.onreadystatechange=function(){
                 if (this.readyState === 4 && this.status === 200){
                     var response=xhrWrite.responseText.trim();
-                    //session token printed as json object
-                    console.log(response);
+                    var jsonObj = JSON.parse(response);
+                    if (jsonObj.code === "OK") {
+                        goBackToCaller(from, jsonObj.session, username);
+                    }
                 }
             };
             xhrWrite.open("POST", "loginConfirm.php?" + dataToSend);
             xhrWrite.send();
         }
 
+        function goBackToCaller(from, session, username) {
+            window.location.href = from + "?session=" + session + "&username=" + username;
+        }
     </script>
 </body>

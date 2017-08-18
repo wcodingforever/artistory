@@ -13,7 +13,18 @@
         //writing to database 
         $dbStatement=$dbConn->prepare("INSERT INTO `loginSessionTable` (`username`,`password`) VALUES (:inUser, :inPwd)");
         $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inPwd"=>$hashedPW));
+
+        $tmpErrorsArr = $dbStatement->errorInfo();  // Any other errors?
+        if ($tmpErrorsArr[0] !== "00000") $errorStr .= implode(" -- ", $tmpErrorsArr); // 00000 is no errors.
     }
+
+    $arr = array();
+    if ($errorStr !== "") {
+        $arr = array ('code' => "ERROR", 'msg' => $errorStr);
+    } else {
+        $arr = array ('code' => "OK");
+    }
+    echo json_encode($arr);
 ?>
 
 

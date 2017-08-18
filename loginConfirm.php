@@ -12,14 +12,14 @@
         //hashing the password
         $hashedPW= hash("sha256",$password);
         //writing to database 
-        $dbStatement=$dbConn->prepare("SELECT `username`,`password` FROM `loginSessionTable` WHERE `username` = :inUser AND `password` = :inPwd");
+        $dbStatement=$dbConn->prepare("SELECT `username`,`password`, NOW() AS current FROM `loginSessionTable` WHERE `username` = :inUser AND `password` = :inPwd");
         $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inPwd"=>$hashedPW));
         $results=$dbStatement->fetchAll(PDO::FETCH_ASSOC);
         if (count($results)!==0){
-            $sessionTokenVal=$hashedPW.$timestamp;
-            $sessionToken=hash("sha256",$sessionTokenVal);
-            $dbStatement=$dbConn->prepare("UPDATE `loginSessionTable` SET session=:inSession , timestamp=NOW() WHERE password=:inPwd");
-            $dbResult=$dbStatement->execute(array(":inSession"=>$sessionToken,":inPwd"=>$hashedPW));
+            $sessionTokenVal = $hashedPW . $results[0]['current'];
+            $sessionToken = hash("sha256", $sessionTokenVal);
+            $dbStatement = $dbConn->prepare("UPDATE `loginSessionTable` SET session=:inSession , timestamp=NOW() WHERE password=:inPwd");
+            $dbResult = $dbStatement->execute(array(":inSession"=>$sessionToken,":inPwd"=>$hashedPW));
             //returning json value with the sessiontoken
             $arr = array ('code'=>"OK",'session'=>$sessionToken);
             echo json_encode($arr);
