@@ -164,6 +164,9 @@
                     if (jsonObj.code === "OK") {
                         goBackToCaller(from, jsonObj.session, username);
                     }
+                    else{
+                        alert("Invalid username or password!");
+                    }
                 }
             };
             xhrWrite.open("POST", "loginConfirm.php?" + dataToSend);

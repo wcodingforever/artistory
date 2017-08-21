@@ -85,18 +85,17 @@
     
 <body>
     <div id = "uploaderContainer">
-        <form enctype="multipart/form-data" action="uploadFile.php" method="POST">
-        <div id = "title">Select the file you want to upload</div>
-        <div class = "form-group">
-            <input type = "file" id = "fileInput" name = "fileInput"/>
-            <p class="help-block">Click the button and choose your artwork you wish to upload.</p>
-        </div>
-
-        <input id = "submitButton" type = "submit" value = "Upload Image" name = "submit">
-        <div id = "dropBox"></div>
-        <div id = "imagePreviewContainer">
-            <img src = "#" class = "image">
-        </div>
+        <form enctype="multipart/form-data" action="fileUpload.php" method="POST">
+            <div id = "title">Select the file you want to upload</div>
+            <div class = "form-group">
+                <input type = "file" id = "fileInput" name = "fileInput"/>
+                <p class="help-block">Click the button and choose your artwork you wish to upload.</p>
+            </div>
+            <input id = "submitButton" type = "submit" value = "Upload Image" name = "submit">
+            <div id = "dropBox"></div>
+            <div id = "imagePreviewContainer">
+                <img src = "#" class = "image">
+            </div>
         </form>
     </div>
     
