@@ -105,6 +105,8 @@
         <?php
             if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'create') {
         ?>
+
+        document.getElementById("createAccount").addEventListener("click",function(){
             $("#confirmPWwrapper").css("display","block");
             $("#submitButton").replaceWith($("#createButton"));
             $("#createButton").css("display","block");
