@@ -94,8 +94,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
     <script>
         //creating an account, writing the hashed pw and username to the loginSessionTable
-        
         document.getElementById("createAccount").addEventListener("click",function(){
+            $("#createAccount").css("display","none");
             $("#confirmPWwrapper").css("display","block");
             $("#submitButton").replaceWith($("#createButton"));
             $("#createButton").css("display","block");
