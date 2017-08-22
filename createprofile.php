@@ -1,8 +1,4 @@
-<?php
-    if (!isset($_REQUEST['session']) || !isset($_REQUEST['username'])) {
-        header("Location: artistory.php");
-    }
-?><!DOCTYPE html>
+<?php include('sessionCheck.php'); ?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

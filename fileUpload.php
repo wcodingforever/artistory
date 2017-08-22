@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php include('sessionCheck.php'); ?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,9 +16,10 @@
         }
         #uploaderContainer{
             width: 600px;
-            height: 600px;
+            height: auto;
             border: 1px solid;
             text-align:Center;
+
             
         }
         #title{
@@ -75,26 +76,38 @@
             background-color: white;
             color: #FF7575;
         }
-
+        #imagePreviewContainer{
+            margin-top:15px;
+            
+        }
         .image{
-            width:400px;
-            height: 400px;
+            width: 170px;
+            height: 200px;
+            margin-top:10px;
+            margin-right: 10px;
         }
     </style>
 </head>
     
 <body>
     <div id = "uploaderContainer">
-        <form enctype="multipart/form-data" action="fileUpload.php" method="POST">
+        <form enctype="multipart/form-data">
             <div id = "title">Select the file you want to upload</div>
             <div class = "form-group">
                 <input type = "file" id = "fileInput" name = "fileInput"/>
                 <p class="help-block">Click the button and choose your artwork you wish to upload.</p>
             </div>
-            <input id = "submitButton" type = "submit" value = "Upload Image" name = "submit">
+            <input id = "submitButton" type = "button" value = "Upload Image" name = "submit">
             <div id = "dropBox"></div>
             <div id = "imagePreviewContainer">
-                <img src = "#" class = "image">
+                <?php
+                    $dir = "/Applications/XAMPP/htdocs/artistoryProject/artistory/images/";
+                    $search = glob($dir."*");
+                    foreach ($search as $image) {
+                        $imageNew=str_replace("/Applications/XAMPP/htdocs/artistoryProject/artistory","",$image);
+                        echo("<img class='image' src='.$imageNew'>") ;
+                    }
+                ?>
             </div>
         </form>
     </div>
@@ -105,8 +118,9 @@
             console.log(input.files[0]);
             var reader = new FileReader();
             reader.onload = function (e) {
-                $('.image').css("display","inline-block");
-                $('.image').attr('src', e.target.result);
+                $("#imagePreviewContainer").append("<img class=image src="+e.target.result+">");
+                // $('.image').css("display","inline-block");
+                // $('.image').attr('src', e.target.result);
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -115,11 +129,9 @@
     $("#fileInput").change(function(){
         readURL(this);
     });
-
+    //write to database. 
     document.getElementById("submitButton").addEventListener("click",writeToDataBase);
-
     function writeToDataBase(){
-        $(".image").css("display","none");
         var filePath = $("#fileInput").val();
         var fileName = $('input[type=file]').val().split('\\').pop();
         console.log("filepath:"+filePath);
@@ -134,6 +146,31 @@
         };
         xhrWrite.open("POST", "uploadFile.php?" + dataToSend);
         xhrWrite.send();
+    }
+
+    //save to folder.
+    document.getElementById("submitButton").addEventListener("click",uploadFile);
+    function uploadFile(){
+        var input = document.getElementById("fileInput");
+        var file = input.files[0];
+        if(file != undefined){
+            formData= new FormData();
+            if(!!file.type.match(/image.*/)){
+                formData.append("fileInput", file);
+                $.ajax({
+                    url: "uploadFile.php",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        alert('success');
+                    }
+                });
+            }
+            else{alert('Not a valid image!');}
+        }
+        else{alert('Input something!');}
     }
 
     </script>
