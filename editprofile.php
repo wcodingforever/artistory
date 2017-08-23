@@ -1,4 +1,28 @@
-<?php include('sessionCheck.php'); ?><!DOCTYPE html>
+<?php
+    include('sessionCheck.php');
+
+    $resultArr = [];
+    $errorStr = "";
+    $dbConn = new PDO("mysql:hostname=localhost;dbname=artistory","root","");
+    $username = "";
+
+    if(count($_REQUEST)>0 && array_key_exists("username", $_REQUEST) && $_REQUEST["username"] !== ""){
+        $username = $_REQUEST['username'];
+        $dbStatement = $dbConn -> prepare("SELECT `username`, `firstName`, `lastName`, `city`, `country`, `phone`, `email`, `socialMedia`, `interest` FROM `profile` WHERE `username` = :inusername");
+        $dbResult = $dbStatement -> execute(array(":inusername" => $username));
+
+        while ($row = $dbStatement -> fetch(PDO::FETCH_ASSOC)){
+            // $resultStr .= "{$row['username']}|{$row['firstName']}|{$row['lastName']}|{$row['city']}|{$row['country']}|{$row['phone']}|{$row['email']}|{$row['socialMedia']}|{$row['interest']}".PHP_EOL;
+            $resultArr = $row;
+        }
+
+        $tmpErrorsArr = $dbStatement->errorInfo();  // Any other errors?
+        if ($tmpErrorsArr[0] !== "00000") $errorStr .= implode(" -- ", $tmpErrorsArr); // 00000 is no errors.
+    }
+    if ($errorStr !== "") echo ($errorStr);
+    // else print_r($resultArr);
+    
+?><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +30,10 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://use.fontawesome.com/bb786203ce.js"></script>
 <title>editprofile.html</title>
 <style>
     * {
@@ -46,7 +74,7 @@
         width: 80%;
     }
     #form-wrapper {
-        margin: 0;
+        margin: 0 auto;
         border: 3px ridge rgb(140, 50, 90);
         border-collapse: separate;
         min-width: 300px;
@@ -191,6 +219,101 @@
         cursor: pointer;
         color: rgba(140, 50, 110, 0.9);
     }
+
+    #uploaderContainer{
+        width: 100%;
+        padding: 30px;
+        height: auto;
+        border: 1px solid;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    #title{
+        width:300px;
+        height:20px;
+        padding:5px;
+        margin: 5px auto;
+        text-align: center;
+    }
+
+    #uploaderContainer [type=file] {
+        cursor: pointer;
+    }
+    .form-group{
+        border:1px solid #FF7575;
+        padding:5px;
+        margin:10px auto;
+        width:70%;
+        border-radius: 4px;
+        text-align:left;
+    }
+
+    input[type=file]{
+        margin: 0 auto;
+        font-size: x-small;
+        margin: 0;
+        vertical-align: top;
+    }
+
+    #fileInputLabel{
+        border:1px solid #FF7575;
+        border-radius: 4px;
+        display: inline-block;
+        background-color: #FF7575;
+        color: white;
+        padding: 3px;
+        font-weight: 100;
+        cursor:pointer;
+    }
+    .help-block{
+        display: inline-block;
+        font-size: x-small;
+    }
+    #submitButton{
+        width: 100px;
+        margin-top:10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.4s;
+        border: 1px solid #FF7575;
+        background-color: #FF7575;
+        color: white;
+    }
+    #submitButton:hover{
+        background-color: white;
+        color: #FF7575;
+    }
+    #imagePreviewContainer{
+        margin-top:15px;
+    }
+    .imageContainer{
+        width: 210px;
+        height: 240px;
+        margin-top:10px;
+        margin-right: 10px;
+        border: 1px solid red;
+        display: inline-block;
+    }
+    .image{
+        width: 200px;
+        height: 200px;
+        displayLinline-block;
+    }
+    .filename{
+        float:left;
+        width:150px;
+        margin-top: 10px;
+    }
+    .editIcon{
+        float:right;
+        margin-top:10px;
+        cursor: pointer;
+    }
+    .btn-info{
+        width: 40px;
+        padding: 0px;
+        border: none;
+    }
 </style>
 </head>
 <body>
@@ -221,8 +344,57 @@
         &nbsp;<i class="fa fa-gratipay"></i><i class="fa fa-gratipay"></i><i class="fa fa-gratipay"></i><i class="fa fa-gratipay"></i><br>
         <div id="iinterest">&nbsp;<?php echo($resultArr['interest']); ?></div>
     </div>
+
+    <div id = "uploaderContainer">
+        <form enctype="multipart/form-data">
+            <div id = "title">Select the file you want to upload</div>
+            <div class = "form-group">
+                <input type = "file" id = "fileInput" name = "fileInput"/>
+                <p class="help-block">Click the button and choose your artwork you wish to upload.</p>
+            </div>
+            <input id = "submitButton" type = "button" value = "Upload Image" name = "submit">
+            <div id = "dropBox"></div>
+            <div id = "imagePreviewContainer">
+                <?php
+                    $dir = "/Applications/XAMPP/htdocs/artistoryProject/artistory/images/";
+                    $search = glob($dir."*");
+                    foreach ($search as $image) {
+                        $fileName = basename($image);
+                        $imageNew=str_replace("/Applications/XAMPP/htdocs/artistoryProject/artistory","",$image);
+                        echo(
+                        "<div class='imageContainer'>
+                            <div id='filename$fileName'>filename: $fileName</div><div class='editIcon'>
+                            <button type='button' class='btn btn-info' data-container='body' data-toggle='modal' data-target='#popUpModal'>
+                                <i class='fa fa-pencil-square-o fa-2x' aria-hidden=true></i>
+                            </button>
+                        </div>
+                        <div class='modal fade' id='popUpModal' role='dialog'>
+                            <div class='modal-dialog'>
+                                <div class='modal-content'>
+                                    <div class='modal-header'>
+                                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                        <h4 class='modal-title'>Edit the name of your file</h4>
+                                    </div>
+                                    <div class='modal-body'>
+                                    <form>
+                                        new name: <input type='text' id='changedName'>
+                                        <input id = 'nameSubmit' type = 'button' value ='change'>
+                                    </form>
+                                    </div>
+                                    <div class='modal-footer'>
+                                    <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <img class='image' src='.$imageNew'></div>") ;
+                    }
+                ?>
+            </div>
+        </form>
+    </div>
     
-    <!-- This is the list of uploaded pictures -->
+<!--     
     <input type="button" id="enjoy" value="Enjoy My Artistory">
     <div id="works-wrapper">
         <div>
@@ -259,7 +431,7 @@
         </div>
         <input type="button" id="seemore" value="See More">
     </div>
-</div>
+</div> -->
 
 <div id="pop-form-wrapper" style="display:none;" method="get">
     <!--This is title-->
@@ -272,8 +444,8 @@
     <div><label>Email</label><input id="editemail" class="editinputs"  type="text" placeholder="abcd@whatever.com" value="<?php echo($resultArr['email']); ?>"></div>
     <div><label>City, State</label><input id="editcity" class="editinputs"  type="text" placeholder="Los Angeles, CA" value="<?php echo($resultArr['city']); ?>"></div>
     <div><label>Country</label><input id="editcountry" class="editinputs"  type="text" placeholder="USA" value="<?php echo($resultArr['country']); ?>"></div>
-    <div><label id="pop-socialmedia-label" class="textarea-label">Social Media</label><textarea id="editsocialmedia" class="pop-textarea" placeholder="<?php echo($resultArr['socialMedia']); ?>"></textarea></div>
-    <div><label id="pop-interest-label" class="textarea-label">Interest</label><textarea id="editinterest" class="pop-textarea" placeholder="<?php echo($resultArr['interest']); ?>"></textarea></div>
+    <div><label id="pop-socialmedia-label" class="textarea-label">Social Media</label><textarea id="editsocialmedia" class="pop-textarea" placeholder="facebook, instagram, twitter, pinterest address ..."><?php echo($resultArr['socialMedia']); ?></textarea></div>
+    <div><label id="pop-interest-label" class="textarea-label">Interest</label><textarea id="editinterest" class="pop-textarea" placeholder="About you."><?php echo($resultArr['interest']); ?></textarea></div>
     
     <!--This is edit button-->
     <div id="edit-wrapper"><input type="button" id="edit" value="Save"></div>
@@ -327,13 +499,134 @@
                 console.log(response);
                 var jsonObj = JSON.parse(response);
                 if (jsonObj.code === "OK") {
-                    window.location.href = "artistory.php?username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>#";
+                    //window.location.href = "artistory.php?username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>#";
+                    window.location.reload();
                 }
             }
         };
         xhrWrite.open("GET", "update-profile-info.php?" + dataToSend);
         xhrWrite.send();
     };
+
+    $("#fileInput").change(function(){ readURL(this); });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            console.log(input.files[0]);
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(".help-block").html("<div class='preview-label'>Preview:</div><img class=image src="+e.target.result+">");
+                // $("#imagePreviewContainer").append("<img class=image src="+e.target.result+">");
+                // $('.image').css("display","inline-block");
+                // $('.image').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    //write to database. 
+    document.getElementById("submitButton").addEventListener("click",writeToDataBase);
+    function writeToDataBase(){
+        var filePath = $("#fileInput").val();
+        var fileName = $('input[type=file]').val().split('\\').pop();
+        console.log("filepath:"+filePath);
+        console.log("filename:"+fileName);
+        var dataToSend="filePath="+encodeURIComponent(filePath)+"&fileName="+encodeURIComponent(fileName)+"&username="+"user1";
+        var xhrWrite= new XMLHttpRequest();
+        xhrWrite.onreadystatechange=function(){
+            if (this.readyState === 4 && this.status === 200){
+                var response=xhrWrite.responseText.trim();
+                console.log(response);
+            }
+        };
+        xhrWrite.open("POST", "uploadFile.php?" + dataToSend);
+        xhrWrite.send();
+    }
+
+    //save to folder.
+    document.getElementById("submitButton").addEventListener("click",uploadFile);
+    function uploadFile(){
+        var input = document.getElementById("fileInput");
+        var file = input.files[0];
+        if(typeof file !== 'undefined'){
+            formData= new FormData();
+            if(file.type.match(/image.*/)){
+                formData.append("fileInput", file);
+                $.ajax({
+                    url: "uploadFile.php",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        //alert('success');
+                        $(".help-block").html("Click the button and choose your artwork you wish to upload.");
+                        getUploads();
+                    }
+                });
+            }
+            else{alert('Not a valid image!');}
+        }
+        else{alert('Input something!');}
+    }
+
+    var nameSubmitButton = document.getElementById("nameSubmit");
+    if(typeof nameSubmitButton !== 'undefined' && nameSubmitButton !== null) nameSubmitButton.addEventListner("click",changeName);
+
+    function changeName(){
+        var newName = $("#changedName").val();
+        //overwrite the previous name in html
+        
+        var dataToSend="changedName="+encodeURIComponent(newName)+"&username="+"user1";
+        var xhrWrite= new XMLHttpRequest();
+        xhrWrite.onreadystatechange=function(){
+            if (this.readyState === 4 && this.status === 200){
+                var response=xhrWrite.responseText.trim();
+                console.log(response);
+            }
+        };
+        xhrWrite.open("POST", "editNameFile.php?" + dataToSend);
+        xhrWrite.send();
+    }
+
+
+    function getUploads() {
+        $.ajax({
+            url: "getUploads.php",
+            type: "GET",
+            success: function(data){
+                //alert('success');
+                var inObj = JSON.parse(data);
+                var htmlStr = "";
+                for (var i = 0; i < inObj.length; i++) {
+                    // htmlStr += "<img class='image' src='images/" + inObj[i].filename + "'>";
+                    htmlStr += "<div class='imageContainer'><div id='filename" + inObj[i].filename + "'>filename: " + inObj[i].filename + "</div><div class='editIcon'><button type='button' class='btn btn-info' data-container='body' data-toggle='modal' data-target='#popUpModal'><i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i></button></div>";
+                    htmlStr += "    <div class='modal fade' id='popUpModal' role='dialog'>";
+                    htmlStr += "       <div class='modal-dialog'>";
+                    htmlStr += "           <div class='modal-content'>";
+                    htmlStr += "               <div class='modal-header'>";
+                    htmlStr += "                  <button type='button' class='close' data-dismiss='modal'>&times;</button>";
+                    htmlStr += "                   <h4 class='modal-title'>Edit the name of your file</h4>";
+                    htmlStr += "               </div>";
+                    htmlStr += "                <div class='modal-body'>";
+                    htmlStr += "                <form>";
+                    htmlStr += "                    new name: <input type='text' id='changedName'>";
+                    htmlStr += "                    <input id = 'nameSubmit' type = 'button' value ='change'>";
+                    htmlStr += "                </form>";
+                    htmlStr += "                </div>";
+                    htmlStr += "                <div class='modal-footer'>";
+                    htmlStr += "                <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>";
+                    htmlStr += "                </div>";
+                    htmlStr += "            </div>";
+                    htmlStr += "        </div>";
+                    htmlStr += "    </div>";
+                    htmlStr += "    <img class='image' src='images/" + inObj[i].filename + "'></div>";
+                }
+                $("#imagePreviewContainer").html(htmlStr);
+            }
+        });
+    }
+    getUploads();
 </script>
 </body>
 </html>

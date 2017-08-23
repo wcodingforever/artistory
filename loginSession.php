@@ -56,6 +56,7 @@
             border: 1px solid #FF7575;
             background-color: white;
             color: black;
+            margin-top: 30px;
         }
         #createButton:hover{
             background-color: #FF7575;
@@ -106,7 +107,7 @@
             if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'create') {
         ?>
 
-        document.getElementById("createAccount").addEventListener("click",function(){
+        // document.getElementById("createAccount").addEventListener("click",function(){
             $("#confirmPWwrapper").css("display","block");
             $("#submitButton").replaceWith($("#createButton"));
             $("#createButton").css("display","block");

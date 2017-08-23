@@ -100,7 +100,10 @@
 	}
 	#categ {
 		font-size: 18px;
-		
+	}
+
+	#signIn, #signUp, #afterlogin, #profile {
+		cursor: pointer;
 	}
 	</style>
 </head>
@@ -208,7 +211,7 @@
     });
 
 	profile.click(function () {
-		window.location.href = "editprofile.php?username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>";
+		window.location.href = "editprofile.php?session=<?php if (isset($_REQUEST['session'])) echo($_REQUEST['session']); ?>&username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>";
 	});
 	</script>
 </body>
