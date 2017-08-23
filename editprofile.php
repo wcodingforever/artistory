@@ -1,26 +1,4 @@
-<?php
-    $resultArr = [];
-    $errorStr = "";
-    $dbConn = new PDO("mysql:hostname=localhost;dbname=artistory","root","");
-    $username = "";
-
-    if(count($_REQUEST)>0 && array_key_exists("username", $_REQUEST) && $_REQUEST["username"] !== ""){
-        $username = $_REQUEST['username'];
-        $dbStatement = $dbConn -> prepare("SELECT `username`, `firstName`, `lastName`, `city`, `country`, `phone`, `email`, `socialMedia`, `interest` FROM `profile` WHERE `username` = :inusername");
-        $dbResult = $dbStatement -> execute(array(":inusername" => $username));
-
-        while ($row = $dbStatement -> fetch(PDO::FETCH_ASSOC)){
-            // $resultStr .= "{$row['username']}|{$row['firstName']}|{$row['lastName']}|{$row['city']}|{$row['country']}|{$row['phone']}|{$row['email']}|{$row['socialMedia']}|{$row['interest']}".PHP_EOL;
-            $resultArr = $row;
-        }
-
-        $tmpErrorsArr = $dbStatement->errorInfo();  // Any other errors?
-        if ($tmpErrorsArr[0] !== "00000") $errorStr .= implode(" -- ", $tmpErrorsArr); // 00000 is no errors.
-    }
-    if ($errorStr !== "") echo ($errorStr);
-    // else print_r($resultArr);
-    
-?><!DOCTYPE html>
+<?php include('sessionCheck.php'); ?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,8 +12,6 @@
             font-family: roboto;
             /* border: 1px dotted red; */
         }
-
-        /* This is my profile form*/
         h1 {
             letter-spacing: 20px;
             text-align: center;
@@ -61,22 +37,14 @@
             margin: 10 0 10 60px;
         }
         #socialmedia {
-            width:80%;
             margin-top: 10px;
         }
-        #interest {
-            width: 80%;
-        }
         #form-wrapper {
-            margin: 0;
-            border: 3px ridge rgb(140, 50, 90);
-            border-collapse: separate;
+            border: 1px ridge rgb(140, 50, 90);
             min-width: 300px;
-            max-width: 800px;
+            max-width: 580px;
             width: 100%;
-            min-height: 612px;
-            max-height: 100%;
-            box-shadow: 3px 3px 5px #999;
+            height: 650px;
         }
         #profile-pic-wrapper {
             margin: 0 0 0px 30px;
@@ -112,11 +80,8 @@
         #email, #loca {
             margin-top: 10px;
         }
-        #interest {
-            margin-bottom: 10px;
-        }
 
-        /* This is pop-form */
+
         h4 {
             text-align: center;
             color:rgba(140, 50, 90, 0.8);
@@ -124,50 +89,44 @@
         label {
             display: inline-block;
             text-align: right;
-            padding: 7px;
-            width: 95px;
+            padding: 10px;
+            width: 100px;
             font-family: Roboto;
         }
-        input[type=text] {
-            min-width: 200px;
-            max-width: 330px;
+        input {
+            /*border: 1px solid green;*/
+            width: 320px;
             height: 28px;
             padding: 3px;
+            background-color:rgb(245, 245, 250);
+        }
+        .pop-textarea {
+            width: 320px;
+            height: 90px;
             background-color:rgb(245, 245, 250);
         }
         .textarea-label {
             vertical-align: top;
             margin-top: 25px;
-            
-        }
-        .pop-textarea {
-            color: black;
-            margin-top: 2px;
-            min-width: 202px;
-            max-width: 332px;
-            height: 100%;
-            min-height: 50px;
-            max-height: 90px;
-            background-color:rgb(245, 245, 250);
         }
         #pop-form-wrapper {
             position: relative;
-            /* left: 10px; */
-            bottom: 555px;
-            min-width: 250px;
-            max-width: 330px;
-            height: 510px;
+            left: 150px;
+            bottom: 610px;
+            width: 500px;
+            height: 700px;
             box-shadow: 10px 10px 5px #999;
-            border: 10px outset rgba(140, 50, 100, 0.8);
+            border: 10px outset rgb(140, 50, 90);
             background-color: rgb(255, 150, 190);
             display: none;
+            /* display: block; */
         }
         #edit-wrapper {
             text-align: right;
         }
         #edit {
-            margin: 10px 30px 0 0;
-            width: 40px;
+            margin: 0 40px 0 0;
+            width: 70px;
             height: 30px;
             border-radius: 2px;
             background-color: rgba(140, 50, 90, 0.6);
@@ -179,39 +138,6 @@
         #edit:hover {
             cursor: pointer;
             background-color: rgba(140, 50, 90, 0.9);
-        }
-
-        /* This is my artistory form */
-        #enjoy {
-            margin-left: 20px;
-            display: block;
-            background-color: rgb(70, 20, 255);
-            border: none;
-            color: white;
-            padding: 10px 25px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-        }
-        #enjoy:hover {
-            letter-spacing: 1px;
-            cursor: pointer;
-            background-color: rgb(70, 20, 215);
-        }
-        #seemore {
-            margin-left: 20px;
-            display: block;
-            background-color: white;
-            border: 2px outset rgba(140, 50, 100, 0.8);
-            color: darkgray;
-            padding: 10px 25px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-        }
-        #seemore:hover {
-            cursor: pointer;
-            color: rgba(140, 50, 110, 0.9);
         }
     </style>
 </head>
@@ -228,82 +154,43 @@
         </div>
 
         <!--These are the contents of the profile-->
+
+        
         <div id="names" class="right">
-            <div id="fullname">&nbsp;<?php echo($resultArr['firstName']); ?>&nbsp;<?php echo($resultArr['lastName']); ?></div>
-            <div id="username">&nbsp;<?php echo("@" . $resultArr['username']); ?></div>
-            <div id="phone"><i id="iphone" class="fa fa-phone">&nbsp;<?php echo($resultArr['phone']); ?></i></div>
-            <div id="email"><i id="iemail"class="fa fa-envelope-o">&nbsp;<?php echo($resultArr['email']); ?></i></div>
-            <div id="loca"><i id="iloca"class="fa fa-map-marker">&nbsp;<?php echo($resultArr['city']); ?>,&nbsp;<?php echo($resultArr['country']); ?></i></div>
+            <div id="fullname">John Smith</div>
+            <div id="username">@johnsmith1332</div>
+            <div id="phone"><i class="fa fa-phone">123-456-7890</i></div>
+            <div id="email"><i class="fa fa-envelope-o"></i>abcd@whatever.com</div>
+            <div id="loca"><i class="fa fa-map-marker"></i>New York, USA</div>
         </div>
         <div id="socialmedia" class="left">
-            &nbsp;<i class="fa fa-facebook-square"></i><i class="fa fa-twitter-square"></i><i class="fa fa-instagram"></i><i class="fa fa-pinterest-square"></i>
-            <div id="isocialmedia">&nbsp;<?php echo($resultArr['socialMedia']); ?></div>
-        </div><br><br>
-        <div id="interest" class="left">
-            &nbsp;<i class="fa fa-gratipay"></i><i class="fa fa-gratipay"></i><i class="fa fa-gratipay"></i><i class="fa fa-gratipay"></i><br>
-            <div id="iinterest">&nbsp;<?php echo($resultArr['interest']); ?></div>
-        </div>
-        
-        <!-- This is the list of uploaded pictures -->
-        <input type="button" id="enjoy" value="Enjoy My Artistory">
-        <div id="works-wrapper">
-            <div>
-
-            </div>
-            <div>
-                
-            </div>
-            <div>
-                
-            </div>
-
-            <div>
-                
-            </div>
-            <div>
-                
-            </div>
-            <div>
-                
-            </div>
-
-            <div>
-                
-            </div>
-            <div>
-                
-            </div>
-            <div>
-                
-            </div>
-            <div>
-                
-            </div>
-            <input type="button" id="seemore" value="See More">
+            <i class="fa fa-facebook-square">https://www.facebook.com/johnsmith</i><br>
+            <i class="fa fa-twitter-square">https://twitter.com/johnsmith</i><br>
+            <i class="fa fa-instagram">https://www.instagram.com/johnsmith</i><br>
+            <i class="fa fa-pinterest-square">https://www.pinterest.co.kr/johnsmith</i><br>
+            <div id="interest"><i class="fa fa-gratipay">I love artworks! blahblah</i></div>
         </div>
     </div>
 
-    <div id="pop-form-wrapper" style="display:none;" method="get">
+
+    <div id="pop-form-wrapper" style="display:none;">
         <!--This is title-->
         <h4>Edit your profile</h4>
-        <div><label>Username</label><?php echo($resultArr['username']); ?></div>
-        <div><label>Fullname</label><?php echo($resultArr['firstName']); ?>&nbsp;<?php echo($resultArr['lastName']); ?></div>
-        
+        <div><label>Fullname</label>John Smith</div>
+        <div><label>Username</label>johnsmith1332</div>
+
         <!--These are edit inputs-->
-        <div><label>Phone</label><input id="editphone" class="editinputs" type="text" placeholder="123-456-7890" value="<?php echo($resultArr['phone']); ?>"></div>
-        <div><label>Email</label><input id="editemail" class="editinputs"  type="text" placeholder="abcd@whatever.com" value="<?php echo($resultArr['email']); ?>"></div>
-        <div><label>City, State</label><input id="editcity" class="editinputs"  type="text" placeholder="Los Angeles, CA" value="<?php echo($resultArr['city']); ?>"></div>
-        <div><label>Country</label><input id="editcountry" class="editinputs"  type="text" placeholder="USA" value="<?php echo($resultArr['country']); ?>"></div>
-        <div><label id="pop-socialmedia-label" class="textarea-label">Social Media</label><textarea id="editsocialmedia" class="pop-textarea" placeholder="<?php echo($resultArr['socialMedia']); ?>"></textarea></div>
-        <div><label id="pop-interest-label" class="textarea-label">Interest</label><textarea id="editinterest" class="pop-textarea" placeholder="<?php echo($resultArr['interest']); ?>"></textarea></div>
+        <div><label>Password</label><input type="text" placeholder="enter password"></div>
+        <div><label>Phone</label><input type="text" placeholder="123-456-7890"></div>
+        <div><label>Email</label><input type="text" placeholder="abcd@whatever.com"></div>
+        <div><label>City</label><input type="text" placeholder="New York"></div>
+        <div><label>Country</label><input type="text" placeholder="USA"></div>
+        <div><label id="pop-socialmedia-label" class="textarea-label">Social Media</label><textarea id="pop-socialmedia" class="pop-textarea" placeholder="facebook, instagram, twitter, pinterest address ... "></textarea></div>
+        <div><label id="pop-interest-label" class="textarea-label">Interest</label><textarea id="pop-interest" class="pop-textarea" placeholder="about you"></textarea></div>
         
         <!--This is edit button-->
         <div id="edit-wrapper"><input type="button" id="edit" value="Save"></div>
-
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         var editprofileElem = document.getElementById("editprofile");
         var popupElem = document.getElementById("pop-form-wrapper");
@@ -312,50 +199,10 @@
         editprofileElem.addEventListener("click", function() {
             popupElem.style.display = "block";
         });
+
         saveElem.addEventListener("click", function() {
             popupElem.style.display = "none";
         });
-        // TODO : update profile informaion please!!
-        saveElem.addEventListener("click", updateprofile);
-        function updateprofile() {
-            var editphone = $("#editphone").val();
-            var editemail = $("#editemail").val();
-            var editcity = $("#editcity").val();
-            var editcountry = $("#editcountry").val();
-            var editsocialMedia = $("#editsocialmedia").val();
-            var editinterest = $("#editinterest").val();
-            var dataToSend=
-            "phone="+encodeURIComponent(editphone)+
-            "&email="+encodeURIComponent(editemail)+
-            "&city="+encodeURIComponent(editcity)+
-            "&country="+encodeURIComponent(editcountry)+
-            "&socialMedia="+encodeURIComponent(editsocialMedia)+
-            "&interest="+encodeURIComponent(editinterest)+
-            "&username="+encodeURIComponent("<?php echo($username); ?>");
-            console.log("DATA: " + dataToSend);
-
-            if(editphone === "") {
-                alert("Fill out your profile!");
-                popupElem.style.display = "block";
-                window.location.href = "editprofile.php?username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>";
-                return createprofile;
-            }
-            else {alert("Thank you! You updated your profile!");}
-        
-            var xhrWrite = new XMLHttpRequest();
-            xhrWrite.onreadystatechange = function(){
-                if (this.readyState === 4 && this.status === 200){
-                    var response = xhrWrite.responseText.trim();
-                    console.log(response);
-                    var jsonObj = JSON.parse(response);
-                    if (jsonObj.code === "OK") {
-                        window.location.href = "artistory.php?username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>#";
-                    }
-                }
-            };
-            xhrWrite.open("GET", "update-profile-info.php?" + dataToSend);
-            xhrWrite.send();
-        };
     </script>
 </body>
 </html>

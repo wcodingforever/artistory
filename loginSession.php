@@ -105,6 +105,8 @@
         <?php
             if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'create') {
         ?>
+
+        document.getElementById("createAccount").addEventListener("click",function(){
             $("#confirmPWwrapper").css("display","block");
             $("#submitButton").replaceWith($("#createButton"));
             $("#createButton").css("display","block");
@@ -161,6 +163,9 @@
                     var jsonObj = JSON.parse(response);
                     if (jsonObj.code === "OK") {
                         goBackToCaller(from, jsonObj.session, username);
+                    }
+                    else{
+                        alert("Invalid username or password!");
                     }
                 }
             };
