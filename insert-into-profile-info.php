@@ -6,8 +6,9 @@
     $errorStr = "";
     $resultStr = "";
     $dbConn=new PDO("mysql:hostname=localhost;dbname=artistory","root","");
-    if (count ($_REQUEST) > 0 && array_key_exists("firstName", $_REQUEST) && $_REQUEST["firstName"] !== ""){
+    if (count ($_REQUEST) > 0 && array_key_exists("username", $_REQUEST) && $_REQUEST["username"] !== ""){
         // echo ("I'm HERE!");
+        $username = $_REQUEST['username'];
         $firstName = $_REQUEST['firstName'];
         $lastName = $_REQUEST['lastName'];
         $phone = $_REQUEST['phone'];
@@ -20,15 +21,11 @@
         
         //writing to database
         $dbStatement = $dbConn -> prepare("INSERT INTO `profile` 
-        (`firstName`, `lastName`, `phone`, `email`, `socialMedia`, `interest`, `city`, `country`, `regTime`) 
-VALUES (:infirstName, :inlastName, :inphone, :inemail, :insocialMedia, :ininterest, :incity, :incountry, NOW())");
+        (`username`, `firstName`, `lastName`, `city`, `country`, `phone`, `email`, `socialMedia`, `interest`, `regTime`) 
+VALUES (:inusername, :infirstName, :inlastName, :incity, :incountry, :inphone, :inemail, :insocialMedia, :ininterest, NOW())");
         
-        $dbResult = $dbStatement -> execute(array(":infirstName" => $firstName,":inlastName" => $lastName,":inphone" => $phone,":inemail" => $email,
-        ":insocialMedia" => $socialMedia, ":ininterest" => $interest, ":incity" => $city,":incountry" => $country));
-
-        // while ($row=$dbStatement->fetch(PDO::FETCH_ASSOC)){
-        //     $resultStr .= "{$row['firstName']}|{$row['lastName']}|{$row['phone']}|{$row['email']}|{$row['socialMedia']}|{$row['interest']}|{$row['city']}|{$row['country']}|{$row['regTime']}".PHP_EOL;
-        // }
+        $dbResult = $dbStatement -> execute(array(":inusername" => $username, ":infirstName" => $firstName, ":inlastName" => $lastName, 
+        ":incity" => $city,":incountry" => $country, ":inphone" => $phone,":inemail" => $email, ":insocialMedia" => $socialMedia, ":ininterest" => $interest));
 
         //check to see if things are written into the databse. 
         if ($dbStatement -> rowCount() < 1) $errorStr .= " -- COULD NOT ADD ROW TO DATABASE. -- ";

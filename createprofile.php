@@ -21,33 +21,37 @@
         label {
             display:inline-block;
             text-align: right;
-            padding: 10px;
+            padding: 7px;
             width: 100px;
             font-family: Roboto;
         }
         input {
             margin-left: 5px;
-            width: 250px;
+            min-width: 200px;
+            max-width: 330px;
             height: 28px;
             padding: 3px;
             background-color: rgb(245, 245, 250);
         }
-        .textarea {
+        textarea {
             margin-left: 5px;
-            width: 255px;
-            height: 100px;
+            margin-top: 2px;
+            min-width: 204px;
+            max-width: 332px;
+            height: 100%;
+            min-height: 50px;
+            max-height: 90px;
             background-color: rgb(245, 245, 250);
         }
         .textarea-label {
             vertical-align: top;
-            margin-top: 25px;
+            margin-top: 15px;
         }
         #form-wrapper {
             min-width: 280px;
-            max-width: 500px;
+            max-width: 400px;
             width: 100%;
-            height: 100%;
-            max-height: 1200px;
+            height: 530px;
             background-color: white;
             box-shadow: 10px 10px 5px #999;
             border: 10px outset rgb(140, 50, 90);
@@ -59,8 +63,8 @@
             text-align: right;
         }
         #submit {
-            margin: 18px 40px 0 0;
-            width: 70px;
+            margin: 15px 70px 0 0;
+            width: 50px;
             height: 30px;
             border-radius: 2px;
             background-color: rgba(140, 50, 90, 0.6);
@@ -81,6 +85,10 @@
         <h4>Fill out the profile, please</h4>
         <!--these are inputs-->
         <div>
+            <label>Username*</label>
+            <input type="text" id="username" name="username" value="<?php echo($_REQUEST['username']); ?>">
+        </div>
+        <div>
             <label>Firstname*</label>
             <input type="text" id="firstName" name="firstName" value="" placeholder="John">
         </div>
@@ -97,7 +105,7 @@
             <input type="text" id="email" name="email" value="" placeholder="abcd@whatever.com">
         </div>
         <div>
-            <label>City*</label>
+            <label>City, State*</label>
             <input type="text" id="city" name="city" value="" placeholder="New York">
         </div>
         <div>
@@ -116,12 +124,13 @@
             <input type="submit" id="submit" name="submit" value="Submit">
         </div>
     </div>
-    <!-- firstName lastName phone email city country socialMedia interest -->
+    <!-- firstName lastName citystate country phone email socialMedia interest -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.3.1/sha_dev.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         document.getElementById("submit").addEventListener("click", createprofile);
         function createprofile() {
+            var username = $("#username").val();
             var firstName = $("#firstName").val();
             var lastName = $("#lastName").val();
             var phone = $("#phone").val();
@@ -134,7 +143,8 @@
             // TODO : Send profile informaion please!!
 
             var dataToSend=
-            "firstName="+encodeURIComponent(firstName)+
+            "username="+encodeURIComponent(username)+
+            "&firstName="+encodeURIComponent(firstName)+
             "&lastName="+encodeURIComponent(lastName)+
             "&phone="+encodeURIComponent(phone)+
             "&email="+encodeURIComponent(email)+
@@ -158,6 +168,8 @@
             };
             xhrWrite.open("GET", "insert-into-profile-info.php?" + dataToSend);
             xhrWrite.send();
+
+            alert("Thank you! You sent the form!");
         };
     </script>
 </body>

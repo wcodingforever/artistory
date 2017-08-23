@@ -102,7 +102,6 @@
 		font-size: 18px;
 		
 	}
-	
 	</style>
 </head>
 	<body>
@@ -112,24 +111,37 @@
 					<span id="logo"> LOGO </span>
 					<form class="navbar-form navbar-left" role="search" >
 						<div class="input-group"> 
-  							<input type="text" class="form-control" placeholder="I am interested in" id="placeholder" > 
+							<input type="text" class="form-control" placeholder="I am interested in" id="placeholder" > 
     						<span class="input-group-btn"> 
     						<button type="submit" value="go" class="btn btn-default" id="lookingFor"> 
     						<span class="glyphicon glyphicon-search" aria-hidden="true" id="lupa" ></span>
-  							</button>
-  							</span>
-  						</div>
+							</button>
+							</span>
+						</div>
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
 						<span class="icon-bar"></span>
-  						<span class="icon-bar"></span>
-  						<span class="icon-bar"></span>
-  					</button>
-  					
-  					</form>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					
+					</form>
 					<div class="collapse navbar-collapse" id="myNavbar">
-  						<ul class="nav navbar-nav navRight">	
+						<ul class="nav navbar-nav navRight">
+							<?php
+								if (isset($_REQUEST['username']))
+								{
+							?>
+							<li id="afterlogin"><?php echo("@" . $_REQUEST['username']); ?></li>
+							<li id="profile"> My Profile </li>
+							<?php
+								} else {
+							?>
 							<li id="signIn"> Sign in </li>
 							<li id="signUp"> Become a member </li>
+							<?php
+								}
+							?>
+
 				</div>
 			</nav>
 		</header>
@@ -152,7 +164,7 @@
 					<div class="col-md-3"> <span> <a href="">Paint </a></span><img src="imgs/sztaluga_art.jpg" class="categImages"></div>
 
 					<!-- <div class="col-md-3"> <span> Jewellery </span><img src=""></div>
-					 -->
+					-->
 				</div>
 			</div>
 			<br>
@@ -174,11 +186,17 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript">
-
+	
+	var logo = $("#logo");
 	var searchBtn = $("#lookingFor");
 	var logIn = $("#signIn");
 	var becomeMem = $("#signUp");
-
+	var profile = $("#profile");
+	
+	logo.click(function() {
+		window.location.href = "artistory.php";
+	});
+	
 	becomeMem.click(signUpFunction);
 	function signUpFunction(e) { }
 
@@ -188,6 +206,10 @@
 	becomeMem.click(function() {
         window.location.href = "loginSession.php?from=artistory.php&action=create";
     });
-    </script>
+
+	profile.click(function () {
+		window.location.href = "editprofile.php?username=<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>";
+	});
+	</script>
 </body>
 </html>
