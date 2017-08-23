@@ -14,6 +14,4 @@
         $dbResult=$dbStatement->execute(array(":inUser"=>$username, ":inFileName"=>$fileName,":inFilePath"=>$fileAddress));
     }
 
-
-    
 ?>

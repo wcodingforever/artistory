@@ -9,15 +9,11 @@
         $username=$_REQUEST['username'];
         $sessionToken=$_REQUEST['session'];
 
-        $dbStatement=$dbConn->prepare("SELECT `username` FROM `loginSessionTable` WHERE `username` = :inUser");
-        $dbResult=$dbStatement->execute(array(":inUser"=>$username));
+        //fetching the timestampDB from the table.
+        $dbStatement=$dbConn->prepare("SELECT `timestamp`, NOW() AS current FROM `loginSessionTable` WHERE `username` = :inUser AND `session` = :inSession");
+        $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inSession"=>$sessionToken));
         $results=$dbStatement->fetchAll(PDO::FETCH_ASSOC);
         if(count($results)!==0){
-            //fetching the timestampDB from the table.
-            $dbStatement=$dbConn->prepare("SELECT `timestamp`, NOW() AS current FROM `loginSessionTable` WHERE `username` = :inUser AND `session` = :inSession");
-            $dbResult=$dbStatement->execute(array(":inUser"=>$username,":inSession"=>$sessionToken));
-            $results=$dbStatement->fetchAll(PDO::FETCH_ASSOC);
-
             //getting the difference between timestamps.
             $timestampDB=new DateTime($results[0]['timestamp']);
             // print_r($timestampDB).PHP_EOL;
@@ -32,10 +28,12 @@
                 // echo ("AFTER 24".PHP_EOL);
                 header("Location: artistory.php");
             }
-            $arr = array ('code'=> $msg);
-            echo json_encode($arr);
+            // $arr = array ('code'=> $msg);
+            // echo json_encode($arr);
         }
-        
+        else{
+            header("Location: artistory.php");
+        }
     }
     
 

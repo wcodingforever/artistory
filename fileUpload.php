@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/bb786203ce.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style>
@@ -15,11 +17,10 @@
 
         }
         #uploaderContainer{
-            width: 600px;
+            width: 800px;
             height: auto;
             border: 1px solid;
             text-align:Center;
-
             
         }
         #title{
@@ -78,13 +79,34 @@
         }
         #imagePreviewContainer{
             margin-top:15px;
-            
         }
-        .image{
-            width: 170px;
-            height: 200px;
+        .imageContainer{
+            width: 210px;
+            height: 240px;
             margin-top:10px;
             margin-right: 10px;
+            border: 1px solid red;
+            display: inline-block;
+        }
+        .image{
+            width: 200px;
+            height: 200px;
+            displayLinline-block;
+        }
+        .filename{
+            float:left;
+            width:150px;
+            margin-top: 10px;
+        }
+        .editIcon{
+            float:right;
+            margin-top:10px;
+            cursor: pointer;
+        }
+        .btn-info{
+            width: 40px;
+            padding: 0px;
+            border: none;
         }
     </style>
 </head>
@@ -104,13 +126,38 @@
                     $dir = "/Applications/XAMPP/htdocs/artistoryProject/artistory/images/";
                     $search = glob($dir."*");
                     foreach ($search as $image) {
+                        $fileName = basename($image);
                         $imageNew=str_replace("/Applications/XAMPP/htdocs/artistoryProject/artistory","",$image);
-                        echo("<img class='image' src='.$imageNew'>") ;
+                        echo(
+                        "<div class='imageContainer'>
+                            <div id='filename$fileName'>filename: $fileName</div><div class='editIcon'>
+                            <button type='button' class='btn btn-info' data-container='body' data-toggle='modal' data-target='#popUpModal'>
+                                <i class='fa fa-pencil-square-o fa-2x' aria-hidden=true></i>
+                            </button>
+                        </div>
+                        <div class='modal fade' id='popUpModal' role='dialog'>
+                            <div class='modal-dialog'>
+                                <div class='modal-content'>
+                                    <div class='modal-header'>
+                                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                        <h4 class='modal-title'>Edit the name of your file</h4>
+                                    </div>
+                                    <div class='modal-body'>
+                                    <form>
+                                        new name: <input type='text' id='changedName'>
+                                        <input id = 'nameSubmit' type = 'button' value ='change'>
+                                    </form>
+                                    </div>
+                                    <div class='modal-footer'>
+                                    <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <img class='image' src='.$imageNew'></div>") ;
                     }
                 ?>
-            </div>
-        </form>
-    </div>
+  
     
     <script>
     function readURL(input) {
@@ -172,6 +219,25 @@
         }
         else{alert('Input something!');}
     }
+
+    document.getElementById("nameSubmit").addEventListner("click",changeName);
+
+    function changeName(){
+        var newName = $("#changedName").val();
+        //overwrite the previous name in html
+        
+        var dataToSend="changedName="+encodeURIComponent(newName)+"&username="+"user1";
+        var xhrWrite= new XMLHttpRequest();
+        xhrWrite.onreadystatechange=function(){
+            if (this.readyState === 4 && this.status === 200){
+                var response=xhrWrite.responseText.trim();
+                console.log(response);
+            }
+        };
+        xhrWrite.open("POST", "editNameFile.php?" + dataToSend);
+        xhrWrite.send();
+    }
+    
 
     </script>
 </body>
