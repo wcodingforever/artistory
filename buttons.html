@@ -53,7 +53,7 @@
 		var countLikes = 0;
 		var countLoves = 0;
 
-		creative.click(clickFunc);
+/*		creative.click(clickFunc);
 
 
 			function clickFunc(e) {
@@ -74,7 +74,22 @@
 			console.log(countLoves);
 			printMeLoves.html("<span class ='glyphicon glyphicon-heart-empty' aria-hidden='true'> "  + countLoves + "</span>");
 
-		});
+		});*/
+
+		  $(function (){
+            $('#creative').click(function(){
+            var request = $.ajax({
+                                    type: "GET",
+                                    url: "likes.php?id=1&action=update"                               
+                                  });
+                                  request.done(function(msg) {
+
+                                        alert('Success');
+                                        return;
+
+                                  });
+							 });
+             });
 
 	</script>
 
