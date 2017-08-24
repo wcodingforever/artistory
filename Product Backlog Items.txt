@@ -1,0 +1,32 @@
+1.Login/authentication/username/password
+    [2h] a. Create login/session table in DB (SQL)
+    [2h] b. Create login/session form. (HTML/CSS/JS)
+    [4h] c. Create REST API for login. (PHP)
+    [2h] d. Connect login form to REST API. (JS/AJAX)
+[4h] 2.Session management REST API (PHP)
+3.Edit/Create profile/tags
+    [2h] a. Create profile table in DB (SQL)
+    [4h] b. Create profile form for creating and editing profiles. (HTML/CSS/JS)
+    [3h] c. Create REST API for profile data . (PHP)
+    [3h] d. Connect profile form to REST API. (JS/AJAX)
+    [2h] e. Add session management.
+[10h] 4.View profile (HTML/CSS/JS/AJAX)
+5.Upload artwork
+    [2h] a. Create database table for filenames on server.
+    [2h] b. Create the form for uploading files.
+    [6h] c. Create the REST API to accept/serve uploaded files.
+6.Choose template
+    [4h] a. Create the form for choosing a template. (HTML/CSS/JS/AJAX)
+[10h] 7.Create templates(3)
+8.Edit artwork name/tags/order
+    [5h] a. Create form for editing metadata of files that were uploaded.
+9.Search form -keywords by category/name/tags/upload names
+    [2h] a. Create search form. (HTML/CSS/JS/AJAX)
+    [5h] b. Create search REST API. (PHP)
+    [4h] c. Create search results. (HTML/CSS/JS/AJAX)
+[10h] 11.Main page/home page (HTML/CSS/JS)
+12.Artwork likes/remove
+    [1h] a. Create icons and buttons.
+    [5h] b. Create the REST API for artwork likes to artwork table.
+[1h] 13.Database setup
+[2h] 14.Logo

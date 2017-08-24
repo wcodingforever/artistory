@@ -4,7 +4,7 @@
 	$errorTxt = "";
 
     // reading from the DB
-	$dbStat = $dbConn->prepare("SELECT `id`, `username`, `filename`, `timestamp` FROM fileuploadtable");
+	$dbStat = $dbConn->prepare("SELECT `id`, `username`, `filename`, `timestamp`, `likes`, `loves` FROM fileuploadtable");
 	$dbRes = $dbStat->execute();
     $allRows = $dbStat->fetchAll(PDO::FETCH_ASSOC);
 
@@ -15,7 +15,9 @@
         $innerStr .= "\"id\": \"" . $allRows[$i]['id'] . "\",";
         $innerStr .= "\"username\": \"" . $allRows[$i]['username'] . "\",";
         $innerStr .= "\"filename\": \"" . $allRows[$i]['filename'] . "\",";
-        $innerStr .= "\"timestamp\": \"" . $allRows[$i]['timestamp'] . "\"";
+        $innerStr .= "\"timestamp\": \"" . $allRows[$i]['timestamp'] . "\",";
+        $innerStr .= "\"likes\": \"" . $allRows[$i]['likes'] . "\",";
+        $innerStr .= "\"loves\": \"" . $allRows[$i]['loves'] . "\"";
         $innerStr .= "}";
         array_push($innerStrArr, $innerStr);
     }

@@ -220,6 +220,7 @@
         color: rgba(140, 50, 110, 0.9);
     }
 
+    /* This is for the file uploads */
     #uploaderContainer{
         width: 100%;
         padding: 30px;
@@ -291,8 +292,10 @@
         height: 240px;
         margin-top:10px;
         margin-right: 10px;
-        border: 1px solid red;
+        border: 1px solid grey;
         display: inline-block;
+        vertical-align: top;
+        position: relative;
     }
     .image{
         width: 200px;
@@ -308,12 +311,54 @@
         float:right;
         margin-top:10px;
         cursor: pointer;
+        position: absolute;
+        right: 10px;
+        bottom: 40px;
     }
     .btn-info{
         width: 40px;
         padding: 0px;
         border: none;
     }
+    .uploadFilename {
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0.75);
+        color: white;
+        font-weight: bold;
+        position: absolute;
+        width: 100%;
+    }
+
+    .uploadFilename, .editIcon { opacity: 0; transition: opacity 0.5s; }
+    .imageContainer:hover .uploadFilename, .imageContainer:hover .editIcon {
+        opacity: 0.9;
+    }
+
+    /* This is for the like/love buttons */
+    .btn-secondary {
+		background-color: grey;
+		color: white;
+        padding: 0 10px;
+        width: 100%;
+	}
+	.likeLoveDiv {
+        display: inline-block;
+        /* border-radius: 6px; */
+        /* border: 2px solid black; */
+        padding: 2px;
+        height: 26px;
+        width: 50%;
+	}
+    .likeNum, .loveNum {
+        display: inline-block;
+        line-height: 2rem;
+        padding: 0 5px;
+    }
+    .likeLoveDiv .badge {
+        color: rgba(0, 0, 0, 0.9);
+        background-color: white;
+    }
+    .likeLoveWrap { margin-top: 5px; }
 </style>
 </head>
 <body>
@@ -345,93 +390,19 @@
         <div id="iinterest">&nbsp;<?php echo($resultArr['interest']); ?></div>
     </div>
 
-    <div id = "uploaderContainer">
+    <div id="uploaderContainer">
         <form enctype="multipart/form-data">
-            <div id = "title">Select the file you want to upload</div>
-            <div class = "form-group">
-                <input type = "file" id = "fileInput" name = "fileInput"/>
+            <div id="title">Select the file you want to upload</div>
+            <div class="form-group">
+                <input type="file" id="fileInput" name="fileInput"/>
                 <p class="help-block">Click the button and choose your artwork you wish to upload.</p>
             </div>
-            <input id = "submitButton" type = "button" value = "Upload Image" name = "submit">
-            <div id = "dropBox"></div>
-            <div id = "imagePreviewContainer">
-                <?php
-                    $dir = "/Applications/XAMPP/htdocs/artistoryProject/artistory/images/";
-                    $search = glob($dir."*");
-                    foreach ($search as $image) {
-                        $fileName = basename($image);
-                        $imageNew=str_replace("/Applications/XAMPP/htdocs/artistoryProject/artistory","",$image);
-                        echo(
-                        "<div class='imageContainer'>
-                            <div id='filename$fileName'>filename: $fileName</div><div class='editIcon'>
-                            <button type='button' class='btn btn-info' data-container='body' data-toggle='modal' data-target='#popUpModal'>
-                                <i class='fa fa-pencil-square-o fa-2x' aria-hidden=true></i>
-                            </button>
-                        </div>
-                        <div class='modal fade' id='popUpModal' role='dialog'>
-                            <div class='modal-dialog'>
-                                <div class='modal-content'>
-                                    <div class='modal-header'>
-                                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                                        <h4 class='modal-title'>Edit the name of your file</h4>
-                                    </div>
-                                    <div class='modal-body'>
-                                    <form>
-                                        new name: <input type='text' id='changedName'>
-                                        <input id = 'nameSubmit' type = 'button' value ='change'>
-                                    </form>
-                                    </div>
-                                    <div class='modal-footer'>
-                                    <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <img class='image' src='.$imageNew'></div>") ;
-                    }
-                ?>
-            </div>
+            <input id="submitButton" type="button" value="Upload Image" name="submit">
+            <div id="dropBox"></div>
+            <div id="imagePreviewContainer"></div>
         </form>
     </div>
     
-<!--     
-    <input type="button" id="enjoy" value="Enjoy My Artistory">
-    <div id="works-wrapper">
-        <div>
-
-        </div>
-        <div>
-            
-        </div>
-        <div>
-            
-        </div>
-
-        <div>
-            
-        </div>
-        <div>
-            
-        </div>
-        <div>
-            
-        </div>
-
-        <div>
-            
-        </div>
-        <div>
-            
-        </div>
-        <div>
-            
-        </div>
-        <div>
-            
-        </div>
-        <input type="button" id="seemore" value="See More">
-    </div>
-</div> -->
 
 <div id="pop-form-wrapper" style="display:none;" method="get">
     <!--This is title-->
@@ -508,6 +479,9 @@
         xhrWrite.send();
     };
 
+
+    // This is for the file uploads
+
     $("#fileInput").change(function(){ readURL(this); });
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -524,36 +498,39 @@
     }
 
 
-    //write to database. 
-    document.getElementById("submitButton").addEventListener("click",writeToDataBase);
-    function writeToDataBase(){
-        var filePath = $("#fileInput").val();
-        var fileName = $('input[type=file]').val().split('\\').pop();
-        console.log("filepath:"+filePath);
-        console.log("filename:"+fileName);
-        var dataToSend="filePath="+encodeURIComponent(filePath)+"&fileName="+encodeURIComponent(fileName)+"&username="+"user1";
-        var xhrWrite= new XMLHttpRequest();
-        xhrWrite.onreadystatechange=function(){
-            if (this.readyState === 4 && this.status === 200){
-                var response=xhrWrite.responseText.trim();
-                console.log(response);
-            }
-        };
-        xhrWrite.open("POST", "uploadFile.php?" + dataToSend);
-        xhrWrite.send();
-    }
-
     //save to folder.
     document.getElementById("submitButton").addEventListener("click",uploadFile);
     function uploadFile(){
-        var input = document.getElementById("fileInput");
-        var file = input.files[0];
-        if(typeof file !== 'undefined'){
-            formData= new FormData();
-            if(file.type.match(/image.*/)){
+        // var filePath = $("#fileInput").val();
+        // var fileName = $('input[type=file]').val().split('\\').pop();
+        // console.log("filepath:"+filePath);
+        // console.log("filename:"+fileName);
+        // if (filePath !== "" || fileName !== "") {
+        //     var dataToSend="filePath="+encodeURIComponent(filePath)+"&fileName="+encodeURIComponent(fileName)+"&username="+"user1";
+        //     var xhrWrite= new XMLHttpRequest();
+        //     xhrWrite.onreadystatechange=function(){
+        //         if (this.readyState === 4 && this.status === 200){
+        //             var response=xhrWrite.responseText.trim();
+        //             console.log(response);
+        //         }
+        //     };
+        //     xhrWrite.open("POST", "uploadFile.php?" + dataToSend);
+        //     xhrWrite.send();
+        // }
+        
+        var fileElem = document.getElementById("fileInput");
+
+        if(typeof fileElem !== 'undefined' && fileElem !== null){
+            var fileName = fileElem.value.split('\\').pop();
+            var file = fileElem.files[0];
+            var formData = new FormData();
+            if(fileName !== "" && file.type.match(/image.*/)){
                 formData.append("fileInput", file);
                 $.ajax({
-                    url: "uploadFile.php",
+                    url: "uploadFile.php?"
+                        + "filePath=" + encodeURIComponent(fileElem.value)
+                        + "&fileName=" + encodeURIComponent(fileName)
+                        + "&username=" + "<?php if (isset($_REQUEST['username'])) echo($_REQUEST['username']); ?>",
                     type: "POST",
                     data: formData,
                     processData: false,
@@ -561,6 +538,7 @@
                     success: function(data){
                         //alert('success');
                         $(".help-block").html("Click the button and choose your artwork you wish to upload.");
+                        fileElem.value = "";
                         getUploads();
                     }
                 });
@@ -600,7 +578,9 @@
                 var htmlStr = "";
                 for (var i = 0; i < inObj.length; i++) {
                     // htmlStr += "<img class='image' src='images/" + inObj[i].filename + "'>";
-                    htmlStr += "<div class='imageContainer'><div id='filename" + inObj[i].filename + "'>filename: " + inObj[i].filename + "</div><div class='editIcon'><button type='button' class='btn btn-info' data-container='body' data-toggle='modal' data-target='#popUpModal'><i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i></button></div>";
+                    htmlStr += "<div class='imageContainer'>";
+                    htmlStr += "<div id='filename" + inObj[i].filename + "' class='uploadFilename'>" + inObj[i].filename + "</div>";
+                    htmlStr += "<div class='editIcon'><button type='button' class='btn btn-info' data-container='body' data-toggle='modal' data-target='#popUpModal'><i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i></button></div>";
                     htmlStr += "    <div class='modal fade' id='popUpModal' role='dialog'>";
                     htmlStr += "       <div class='modal-dialog'>";
                     htmlStr += "           <div class='modal-content'>";
@@ -620,13 +600,40 @@
                     htmlStr += "            </div>";
                     htmlStr += "        </div>";
                     htmlStr += "    </div>";
-                    htmlStr += "    <img class='image' src='images/" + inObj[i].filename + "'></div>";
+                    htmlStr += "    <img class='image' src='images/" + inObj[i].filename + "'>";
+                    htmlStr += "    <div class='likeLoveWrap'>";
+                    htmlStr += "<div class='likeLoveDiv likeDiv'><button type='button' id='like-" + inObj[i].id + "' class='btn btn-secondary likeButton'><span id='likesLabel-" + inObj[i].id + "' class='likeNum badge'>" + inObj[i].likes + "</span> Likes</button></div>";
+		            htmlStr += "<div class='likeLoveDiv loveDiv'><button type='button' id='love-" + inObj[i].id + "' class='btn btn-secondary loveButton'><span id='lovesLabel-" + inObj[i].id + "' class='loveNum badge'>" + inObj[i].loves + "</span> Love</button></div>";
+                    htmlStr += "    </div>";
+                    htmlStr += "</div>"
                 }
                 $("#imagePreviewContainer").html(htmlStr);
+
+                $('.likeButton').click(function(){
+                    var thisElemID = this.id;
+                    var thisDBID = this.id.substring(this.id.indexOf("-") + 1);
+                    //console.log("ID: " + thisElemID + " DBID: " + thisDBID);
+                    $.ajax({ type: "GET", url: "likes.php?id=" + thisDBID + "&action=addLike" })
+                        .done(function(msg) {
+                            var inObj = JSON.parse(msg);
+                            $("#likesLabel-" + thisDBID).html(inObj.likes);
+                    });
+                });
+                $('.loveButton').click(function(){
+                    var thisElemID = this.id;
+                    var thisDBID = this.id.substring(this.id.indexOf("-") + 1);
+                    //console.log("ID: " + thisElemID + " DBID: " + thisDBID);
+                    $.ajax({ type: "GET", url: "likes.php?id=" + thisDBID + "&action=addLove" })
+                        .done(function(msg) {
+                            var inObj = JSON.parse(msg);
+                            $("#lovesLabel-" + thisDBID).html(inObj.loves);
+                    });
+                });
             }
         });
     }
     getUploads();
+
 </script>
 </body>
 </html>
